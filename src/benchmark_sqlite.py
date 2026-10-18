@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def run_queries(db_path: Path, phase_name: str):
-    print(f"\n--- ВЫПОЛНЕНИЕ КОНТРОЛЬНЫХ ЗАПРОСОВ ({phase_name}) ---")
+    print(f"\n ВЫПОЛНЕНИЕ КОНТРОЛЬНЫХ ЗАПРОСОВ ({phase_name}) ")
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
@@ -34,7 +34,7 @@ def run_queries(db_path: Path, phase_name: str):
 
 
 def create_indexes(db_path: Path):
-    print("\n--- СОЗДАНИЕ ИНДЕКСОВ ---")
+    print("\n СОЗДАНИЕ ИНДЕКСОВ")
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
