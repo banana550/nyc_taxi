@@ -16,5 +16,5 @@
 ## Порядок развёртывания и запуска
 1. Клонируйте репозиторий:
    ```bash
-   git clone <ссылка-на-ваш-репозиторий>
+   git clone <https://github.com/banana550/nyc_taxi.git>
    cd nyc_taxi
