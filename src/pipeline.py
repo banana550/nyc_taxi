@@ -28,7 +28,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--input", 
         type=str, 
-        default="data/interim/sample_200k.csv", 
+        default="data/raw/yellow_tripdata_2015-01.csv", 
         help="Путь к входному файлу"
     )
     parser.add_argument(

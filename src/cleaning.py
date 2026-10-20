@@ -95,16 +95,14 @@ def clean_taxi_data(file_paths: list[Path], output_path: Path) -> pd.DataFrame:
     lost_rows = total_input_rows - final_count
     loss_ratio = (lost_rows / total_input_rows) * 100
 
-    print("\n==========================================")
     print("ИТОГОВАЯ СВОДКА «БЫЛО - СТАЛО»:")
     print(f"Исходное число записей (Было): {total_input_rows}")
     print(f"Итоговое число записей (Стало): {final_count}")
     print(f"Всего удалено записей:         {lost_rows}")
     print(f"Доля потерянных строк:         {loss_ratio:.2f}%")
-    print("==========================================")
 
     if loss_ratio > 10.0:
-        print("ВНИМАНИЕ: Потеряно более 10% данных! Требуется обоснование в отчёте.")
+        print("ВНИМАНИЕ: Потеряно более 10% данных!")
 
     # Сохранение результата
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -114,6 +112,6 @@ def clean_taxi_data(file_paths: list[Path], output_path: Path) -> pd.DataFrame:
     return df
 
 if __name__ == "__main__":
-    input_paths = [Path("data/interim/sample_200k.csv")]
+    input_paths = [Path("data/raw/yellow_tripdata_2015-01.csv")]
     output_parquet = Path("data/processed/clean.parquet")
     clean_taxi_data(input_paths, output_parquet)
