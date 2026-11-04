@@ -22,5 +22,9 @@ CREATE TABLE IF NOT EXISTS trips (
     tpep_dropoff_datetime TIMESTAMP,
     passenger_count INT,
     trip_distance FLOAT,
-    fare_amount FLOAT
+    fare_amount FLOAT,
+
+    CONSTRAINT fk_vendor FOREIGN KEY (vendor_id) REFERENCES vendors(vendor_id),
+    CONSTRAINT fk_rate_code FOREIGN KEY (rate_code_id) REFERENCES rate_codes(rate_code_id),
+    CONSTRAINT fk_payment FOREIGN KEY (payment_type_id) REFERENCES payment_types(payment_type_id)
 );
