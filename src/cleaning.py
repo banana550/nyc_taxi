@@ -21,7 +21,7 @@ def clean_taxi_data(file_paths: list[Path], output_path: Path) -> pd.DataFrame:
         dfs.append(df_part)
         
     df = pd.concat(dfs, ignore_index=True)
-    print(f"  -> Исходных строк: {total_input_rows}, после объединения: {len(df)}")
+    print(f"Исходных строк: {total_input_rows}, после объединения: {len(df)}")
 
     # 2. Нормализация имён столбцов
     print("Этап 2: Нормализация имён столбцов...")
@@ -51,13 +51,13 @@ def clean_taxi_data(file_paths: list[Path], output_path: Path) -> pd.DataFrame:
     key_cols = ["tpep_pickup_datetime", "tpep_dropoff_datetime", "trip_distance", "fare_amount"]
     rows_before = len(df)
     df = df.dropna(subset=[c for c in key_cols if c in df.columns])
-    print(f"  -> Удалено строк: {rows_before - len(df)}")
+    print(f"Удалено строк: {rows_before - len(df)}")
 
     # 6. Удаление дубликатов
     print("Этап 6: Удаление дубликатов...")
     rows_before = len(df)
     df = df.drop_duplicates()
-    print(f"  -> Удалено полных дубликатов: {rows_before - len(df)}")
+    print(f"Удалено полных дубликатов: {rows_before - len(df)}")
 
     # 7. Нормализация категорий
     print("Этап 7: Нормализация категорий...")
@@ -76,7 +76,7 @@ def clean_taxi_data(file_paths: list[Path], output_path: Path) -> pd.DataFrame:
     if "tpep_pickup_datetime" in df.columns and "tpep_dropoff_datetime" in df.columns:
         mask &= df["tpep_pickup_datetime"] <= df["tpep_dropoff_datetime"]
     df = df[mask]
-    print(f"  -> Удалено строк с нарушением правил: {rows_before - len(df)}")
+    print(f"Удалено строк с нарушением правил: {rows_before - len(df)}")
 
     # 9. Выявление выбросов по методу IQR
     print("Этап 9: Фильтрация выбросов (метод IQR)...")
@@ -88,7 +88,7 @@ def clean_taxi_data(file_paths: list[Path], output_path: Path) -> pd.DataFrame:
         lower_bound = q1 - 1.5 * iqr
         upper_bound = q3 + 1.5 * iqr
         df = df[(df["fare_amount"] >= lower_bound) & (df["fare_amount"] <= upper_bound)]
-    print(f"  -> Удалено выбросов: {rows_before - len(df)}")
+    print(f"Удалено выбросов: {rows_before - len(df)}")
 
     # Итоговая сводка
     final_count = len(df)
