@@ -35,6 +35,7 @@ def bootstrap_median(values, n_boot: int = 2000, seed: int = 42) -> tuple[float,
     return float(low), float(high)
 
 
+## ----------------------------------- ##
 from scipy.stats import kruskal, mannwhitneyu
 from statsmodels.stats.multitest import multipletests
 from statsmodels.stats.proportion import proportions_ztest
@@ -112,4 +113,55 @@ def test_two_proportions(count_a: int, n_a: int, count_b: int, n_b: int) -> dict
         "share_a_pct": float(share_a * 100.0),
         "share_b_pct": float(share_b * 100.0),
         "diff_pp": float(diff_pp),
+    }
+
+
+## -------------------------------------------------------- ##
+def compute_correlation_matrices(df: pd.DataFrame, numeric_cols: list) -> dict:
+    """Вычисление матриц Пирсона и Спирмена, а также поиск наибольшего расхождения."""
+    sub_df = df[numeric_cols].dropna()
+
+    corr_pearson = sub_df.corr(method="pearson")
+    corr_spearman = sub_df.corr(method="spearman")
+
+    # Разность матриц в абсолютном выражении
+    diff_matrix = (corr_pearson - corr_spearman).abs()
+
+    # Создаем полностью независимый массив и обнуляем диагональ через маску, без fill_diagonal
+    vals = diff_matrix.to_numpy(copy=True)
+    np.fill_diagonal(vals, -1.0)  # теперь это точно безопасная копия
+
+    row_idx, col_idx = np.unravel_index(vals.argmax(), vals.shape)
+    pair = (diff_matrix.index[row_idx], diff_matrix.columns[col_idx])
+
+    p_val = corr_pearson.loc[pair[0], pair[1]]
+    s_val = corr_spearman.loc[pair[0], pair[1]]
+
+    return {
+        "pearson": corr_pearson,
+        "spearman": corr_spearman,
+        "diff": diff_matrix,
+        "max_pair": pair,
+        "pearson_val": float(p_val),
+        "spearman_val": float(s_val),
+    }
+
+
+def check_simpson_paradox(
+    df: pd.DataFrame, flag_col: str, target_col: str, group_col: str
+) -> dict:
+    """Проверка на парадокс Симпсона по методике подраздела 2.3 (разность медиан)."""
+    overall = df.groupby(flag_col, observed=False)[target_col].median()
+    overall_diff = float(overall[True] - overall[False])
+
+    inside = (
+        df.groupby([group_col, flag_col], observed=False)[target_col].median().unstack()
+    )
+    group_diffs = (inside[True] - inside[False]).sort_values()
+
+    return {
+        "overall_medians": overall,
+        "overall_diff": overall_diff,
+        "inside_medians": inside,
+        "group_diffs": group_diffs,
     }
